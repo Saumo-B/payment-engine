@@ -2,7 +2,7 @@ import { Router } from "express";
 import "dotenv/config";
 import { Order } from "../models/Order.ts";
 import { makeToken } from "../lib/token.ts";
-import { randomUUID, UUID } from "crypto";
+// import { randomUUID, UUID } from "crypto";
 // import crypto from "crypto";
 // import axios from "axios";
 import { StandardCheckoutClient, Env, StandardCheckoutPayRequest} from "pg-sdk-node";
@@ -16,8 +16,8 @@ router.post("/", async (req, res, next) => {
   try {
     const { items = [], customer } = req.body || {};
     const amount = items.reduce((sum: number, it: any) => sum + it.price * it.qty, 0);
-    const orderToken = randomUUID()
-    const token = makeToken();
+    const orderToken = makeToken()
+    // const token = makeToken();
 
     // 1) Create PhonePe order payload
     // const transactionId= orderToken;
