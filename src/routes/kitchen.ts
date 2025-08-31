@@ -1,26 +1,22 @@
 import { Router } from "express";
 import "dotenv/config";
 import { Order } from "../models/Order.ts";
-// import mongoose from "mongoose";
 
 const router = Router();
 
 // Get all orders for today
 router.get("/today", async (req, res, next) => {
   try {
-    // Get start of today (midnight)
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
-    // Get end of today (23:59:59)
     const endOfDay = new Date();
     endOfDay.setHours(23, 59, 59, 999);
 
-    // Query orders created today
     const orders = await Order.find({
       createdAt: { $gte: startOfDay, $lte: endOfDay },
     })
-      .sort({ createdAt: -1 }) // latest first
+      .sort({ createdAt: -1 })
       .lean();
 
     return res.json({
@@ -33,6 +29,43 @@ router.get("/today", async (req, res, next) => {
   }
 });
 
+// PATCH /api/kitchen/status/:orderId
+router.patch("/status/:orderId", async (req, res, next) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    if (!orderId) {
+      return res.status(400).json({ error: "Order ID is required" });
+    }
+
+    if (!status) {
+      return res.status(400).json({ error: "Status is required in request body" });
+    }
+
+    // validate allowed statuses
+    const allowedStatuses = ["created", "paid", "done", "failed"];
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ error: "Invalid status value" });
+    }
+
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    res.json({
+      message: `Order status updated to ${status}`,
+      order,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;
-
-
