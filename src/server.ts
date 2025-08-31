@@ -3,9 +3,9 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import mongoose from "mongoose";
-import orders from "./routes/order.ts";
-import kitchens from "./routes/kitchen.ts";
-import myorders from "./routes/myorder.ts";
+import orders from "./routes/order.js";
+import kitchens from "./routes/kitchen.js";
+import myorders from "./routes/myorder.js";
 
 const app = express();
 
