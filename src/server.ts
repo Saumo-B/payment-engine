@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 // import { connectDB } from "./db.ts";
 import orders from "./routes/order.ts";
 import kitchens from "./routes/kitchen.ts";
+import myorders from "./routes/order.ts";
 // import webhooks from "./routes/webhooks.js";
 
 const app = express();
@@ -29,6 +30,8 @@ app.use(express.json()); // for normal routes (webhook route handles raw body it
 
 app.use("/api/orders", orders);
 app.use("/api/kitchen", kitchens);
+app.use("/api/myorders", myorders);
+
 // // app.use("/api/webhooks", webhooks);
 
 // app.use((err:any, _req:any, res:any, _next:any) => {
