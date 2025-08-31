@@ -3,17 +3,25 @@ import { Order } from "../models/Order.ts";
 
 const router = Router();
 
-// GET /api/myorders?phone=+911234567890
+// GET /api/myorders?phone=1234567890   (will auto-convert to +911234567890)
 router.get("/", async (req, res, next) => {
   try {
-    const { phone } = req.query;
+    let { phone } = req.query;
 
     if (!phone) {
       return res.status(400).json({ error: "Phone number is required" });
     }
 
-    const orders = await Order.find({ phone })
-      .sort({ createdAt: -1 }) // requires timestamps in schema
+    // Convert to string and normalize
+    phone = String(phone).trim();
+
+    // // If it doesn't already start with +91, add it
+    // if (!phone.startsWith("+91")) {
+      phone = "+91" + phone;
+    // }
+
+    const orders = await Order.find({ "customer.phone": phone })
+      .sort({ createdAt: -1 })
       .limit(5);
 
     if (!orders.length) {
@@ -25,7 +33,5 @@ router.get("/", async (req, res, next) => {
     next(err);
   }
 });
-// router.get("/", (req, res) => {
-//   res.json({ message: "myorders route is alive!", phone: req.query.phone });
-// });
+
 export default router;
