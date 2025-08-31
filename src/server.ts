@@ -3,10 +3,10 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import mongoose from "mongoose";
-import { makeToken } from "./lib/token.ts";
+// import { makeToken } from "./lib/token.ts";
 // import { connectDB } from "./db.ts";
 import orders from "./routes/order.ts";
-// import admin from "./routes/admin.js";
+import kitchens from "./routes/kitchen.ts";
 // import webhooks from "./routes/webhooks.js";
 
 const app = express();
@@ -17,18 +17,18 @@ const app = express();
 app.get('/',(req,res)=> {
   res.send('Payment engine is Running')
 })
-app.get("/token", (req, res) =>{
-  try {
-    const token = makeToken();
-    res.json({token});
-  } catch (e) { next(e);}
-})
+// app.get("/token", (req, res) =>{
+//   try {
+//     const token = makeToken();
+//     res.json({token});
+//   } catch (e) { next(e);}
+// })
 app.use(helmet());
 app.use(cors({ origin: process.env.FRONTEND_ORIGIN?.split(",") || true }));
 app.use(express.json()); // for normal routes (webhook route handles raw body itself)
 
 app.use("/api/orders", orders);
-// // app.use("/api/admin", admin);
+app.use("/api/kitchen", kitchens);
 // // app.use("/api/webhooks", webhooks);
 
 // app.use((err:any, _req:any, res:any, _next:any) => {
